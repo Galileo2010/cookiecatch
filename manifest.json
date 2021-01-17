@@ -1,0 +1,23 @@
+{
+    "manifest_version": 2,
+    "name": "I Love Cookie",
+    "version": "1.0",
+    "description": "Cookies is good!",
+    "permissions":[
+        "contextMenus",
+        "storage"
+    ],
+    "background":{
+        "scripts":["eventPage.js"],
+        "persistent": false
+    },
+    "browser_action": {
+        "default_icon": "icon01.png"
+    },
+    "devtools_page": "devtools.html",
+    "icons": {
+        "128": "icon01.png",
+        "48": "icon02.png",
+        "16": "icon03.png"
+      }
+}
