@@ -4,17 +4,16 @@
         <style>
             body {
                 width: 200px;
-                height: 100px;
+                height: 400px;
             }
         </style>
-        <title>
-            Cookies
-        </title>
         <script src="./jquery-3.5.1.min.js"></script>
         <script src="./popup.js"></script>
-        <script src="./clipboard-polyfill.js"></script>
     </head>
     <body>
-        <button id="play">copy cookies</button>
+        <p>Domian:<input type="text" id="domains"></p>
+        <p>Headers:<input type="text" id="headers"></p>
+        <input type="submit" value="Save" id="save">
+        <p id="tips"></p>
     </body>
 </html>

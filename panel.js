@@ -1,25 +1,33 @@
+$(() => {
+    let headers = localStorage.getItem('headers').split(';');
 
-$(function(){
+    createButton(headers);
+    createTextBox(headers);
+    createTips();
+ 
     chrome.devtools.network.onRequestFinished.addListener(
-        function(request) {
-            var request_cookies = request.request.headers.find(e => e.name === 'cookie').value;
-            if(request_cookies){
-                $("#text").text(request_cookies);
-                $("#result").text("");
-                chrome.storage.sync.set({'request_cookies': request_cookies}, function(){});    
-            }
+        (request) => {
+            headers.forEach(element => {
+                var value = request.request.headers.find(e => e.name === element).value;
+                if(value){
+                    $(`#p-${element}`).text(value);
+                    chrome.storage.sync.set({[element]: value}, null);
+                }
+            });
+            $("#tips").text("");
         }
     );
 
-    $("#copy-cookies").click(function (e) { 
-        chrome.storage.sync.get('request_cookies',function(data){
-            copyTextToClipboard(data.request_cookies);
-            $("#result").text("Copied!");
+    headers.forEach(element => {
+        $(`#btn-${element}`).click((e) => { 
+            chrome.storage.sync.get(element, (data) => {
+                copyTextToClipboard(data[element]);
+                $("#tips").text(`${element} Copied!`);
+            });
         });
     });
 });
 
-// Copy provided text to the clipboard.
 function copyTextToClipboard(text) {
     var copyFrom = $('<textarea/>');
     copyFrom.text(text);
@@ -29,6 +37,26 @@ function copyTextToClipboard(text) {
     copyFrom.remove();
 }
 
+function createButton(headers) {
+    headers.forEach(element => {
+        var btn = $(`<button id="btn-${element}">Copy ${element}</button>`);
+        $('body').append(btn);
+    });
+}
+
+function createTextBox(headers) {
+    headers.forEach(element => {
+        var p = $(`<p>${element}: <span id="p-${element}"></span></p>`);
+        $('body').append(p);
+    });
+}
+
+function createTips() {
+    var p = $(`<p id="tips"></p>`);
+    $('body').append(p);
+}
+
+// Copy provided text to the clipboard.
 // function copyTextToClipboard(text) {
 //     navigator.clipboard.writeText(data.request_cookies)
 //         .then(function() {
