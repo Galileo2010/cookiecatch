@@ -1,20 +1,21 @@
-var headerNames = [];
+var domains = ['stackoverflow.com'];
+var headerNames = ['referer', 'cookie'];
+var targetDomain = 'https://developer.chrome.com/*';
+
+chrome.storage.sync.set({'domains': domains}, null);
+chrome.storage.sync.set({'headerNames': headerNames}, null);
+chrome.storage.sync.set({'targetDomain': targetDomain}, null);
+
 var newHeaders = [];
-
-chrome.storage.sync.get('headers', (data) => {
-  var temp = data['headers'] || 'referer;cookie';
-  headerNames = temp.split(';');
-
-  headerNames.forEach(element => {
-    chrome.storage.sync.get(element, (data) => {
-      newHeaders.push({name: element, value: data[element]});
-    });
+headerNames.forEach(element => {
+  chrome.storage.sync.get(element, (data) => {
+    newHeaders.push({name: element, value: data[element]});
   });
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(
   beforeSendHeadersListener,
-  {urls: ['https://developer.chrome.com/*']},
+  {urls: [targetDomain]},
   [ 'blocking', 'requestHeaders', 'extraHeaders']
 );
 
@@ -37,8 +38,11 @@ function updateHeaders(headers, header) {
 }
 
 chrome.storage.onChanged.addListener(function(changes, area) {
-  if (area == "sync" && 'headers' in changes) {
-    headerNames = changes.headers.newValue.split(';');
+  if (area == "sync" && 'headerNames' in changes) {
+    headerNames = changes.headerNames.newValue;
+  }
+  if (area == "sync" && 'targetDomain' in changes) {
+    targetDomain = changes.targetDomain.newValue;
   }
   newHeaders.forEach(header => {
     if (area == "sync" && header.name in changes) {

@@ -1,14 +1,13 @@
 $(() => {
-    chrome.storage.sync.get('headers', (data) => {
-        var temp = data['headers'] || 'referer;cookie';
-        var headers = temp.split(';');
-        createButton(headers);
-        createTextBox(headers);
+    chrome.storage.sync.get('headerNames', (data) => {
+        var headerNames = data['headerNames'];
+        createButton(headerNames);
+        createTextBox(headerNames);
         createTips();
 
         chrome.devtools.network.onRequestFinished.addListener(
             (request) => {
-                headers.forEach(element => {
+                headerNames.forEach(element => {
                     var value = request.request.headers.find(e => e.name === element).value;
                     if(value){
                         $(`#p-${element}`).text(value);
@@ -19,7 +18,7 @@ $(() => {
             }
         );
 
-        headers.forEach(element => {
+        headerNames.forEach(element => {
             $(`#btn-${element}`).click((e) => { 
                 chrome.storage.sync.get(element, (data) => {
                     copyTextToClipboard(data[element]);
@@ -39,15 +38,15 @@ function copyTextToClipboard(text) {
     copyFrom.remove();
 }
 
-function createButton(headers) {
-    headers.forEach(element => {
+function createButton(headerNames) {
+    headerNames.forEach(element => {
         var btn = $(`<button id="btn-${element}">Copy ${element}</button>`);
         $('body').append(btn);
     });
 }
 
-function createTextBox(headers) {
-    headers.forEach(element => {
+function createTextBox(headerNames) {
+    headerNames.forEach(element => {
         var p = $(`<p>${element}: <span id="p-${element}"></span></p>`);
         $('body').append(p);
     });

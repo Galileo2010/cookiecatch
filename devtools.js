@@ -1,10 +1,6 @@
 chrome.storage.sync.get('domains', (data) => {
     var domains = data['domains'];
-    if(!domains){
-        domains = 'stackoverflow.com';
-    }
-    domains = domains.split(';').map(domain => `(^${domain})`).join('|');
-    var eval = `/${domains}/.test(document.domain)`;
+    var eval = `/${domains.map(domain => `(^${domain})`).join('|')}/.test(document.domain)`;
 
     chrome.devtools.inspectedWindow.eval(eval, (reuslt, isException) => {
         if(reuslt && !isException){

@@ -9,36 +9,20 @@ $(function(){
 function init() {
     chrome.storage.sync.get('domains', (data) => {
         var domains = data['domains'];
-        if(!domains){
-            domains = 'stackoverflow.com';
-        }
-        chrome.storage.sync.get('headers', (data) => {
-            var headers = data['headers'];
-            if(!headers){
-                headers = 'referer;cookie';
-            }
-            $("#domains").val(domains);
-            $("#headers").val(headers);
+        chrome.storage.sync.get('headerNames', (data) => {
+            var headerNames = data['headerNames'];
+            chrome.storage.sync.get('targetDomain', (data) => {
+                var targetDomain = data['targetDomain'];
+                $("#domains").val(domains.join(';'));
+                $("#headers").val(headerNames.join(';'));
+                $("#target").val(targetDomain);
+            });
         });
     });
 }
 
 function save() {
-    chrome.storage.sync.get('domains', (data) => {
-        var domains = data['domains'];
-        if(!domains){
-            domains = 'stackoverflow.com';
-        }
-        chrome.storage.sync.get('headers', (data) => {
-            var headers = data['headers'];
-            if(!headers){
-                headers = 'referer;cookie';
-            }
-            $("#domains").val(domains);
-            $("#headers").val(headers);
-        });
-    });
-
-    chrome.storage.sync.set({'domains': $('#domains').val()}, null);
-    chrome.storage.sync.set({'headers': $('#headers').val()}, null);
+    chrome.storage.sync.set({'domains': $('#domains').val().split(';')}, null);
+    chrome.storage.sync.set({'headerNames': $('#headers').val().split(';')}, null);
+    chrome.storage.sync.set({'targetDomain': $('#target').val()}, null);
 }
