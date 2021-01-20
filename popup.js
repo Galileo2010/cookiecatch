@@ -7,21 +7,38 @@ $(function(){
 });
 
 function init() {
-    var domains = localStorage.getItem('domains');
-    if(!domains){
-        domains = 'www.baidu.com;www.bing.cn';
-    }
-
-    var headers = localStorage.getItem('headers');
-    if(!headers){
-        headers = 'Cookie;Host';
-    }
-
-    $("#domains").val(domains);
-    $("#headers").val(headers);
+    chrome.storage.sync.get('domains', (data) => {
+        var domains = data['domains'];
+        if(!domains){
+            domains = 'stackoverflow.com';
+        }
+        chrome.storage.sync.get('headers', (data) => {
+            var headers = data['headers'];
+            if(!headers){
+                headers = 'referer;cookie';
+            }
+            $("#domains").val(domains);
+            $("#headers").val(headers);
+        });
+    });
 }
 
 function save() {
-    localStorage.setItem('domains', $('#domains').val());
-    localStorage.setItem('headers', $('#headers').val());
+    chrome.storage.sync.get('domains', (data) => {
+        var domains = data['domains'];
+        if(!domains){
+            domains = 'stackoverflow.com';
+        }
+        chrome.storage.sync.get('headers', (data) => {
+            var headers = data['headers'];
+            if(!headers){
+                headers = 'referer;cookie';
+            }
+            $("#domains").val(domains);
+            $("#headers").val(headers);
+        });
+    });
+
+    chrome.storage.sync.set({'domains': $('#domains').val()}, null);
+    chrome.storage.sync.set({'headers': $('#headers').val()}, null);
 }

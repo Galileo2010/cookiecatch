@@ -5,11 +5,15 @@
     "description": "Cookies is good!",
     "permissions":[
         "contextMenus",
-        "storage"
+        "storage",
+        "webRequest",
+        "webRequestBlocking",
+        "http://*/*",
+        "https://*/*"
     ],
     "background":{
         "scripts":["eventPage.js"],
-        "persistent": false
+        "persistent": true
     },
     "browser_action": {
         "default_icon": "icon01.png",
