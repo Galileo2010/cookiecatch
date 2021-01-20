@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "name": "I Love Cookie",
-    "version": "1.0",
+    "version": "3.0",
     "description": "Cookies is good!",
     "permissions":[
         "contextMenus",
