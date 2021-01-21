@@ -2,15 +2,23 @@ var domains = ['stackoverflow.com'];
 var headerNames = ['referer', 'cookie'];
 var targetDomain = 'https://developer.chrome.com/*';
 
-chrome.storage.sync.set({'domains': domains}, null);
-chrome.storage.sync.set({'headerNames': headerNames}, null);
-chrome.storage.sync.set({'targetDomain': targetDomain}, null);
+chrome.storage.sync.set(
+  {
+    'domains': domains,
+    'headerNames': headerNames,
+    'targetDomain': targetDomain
+  }, 
+  null
+);
 
 var newHeaders = [];
 headerNames.forEach(element => {
   chrome.storage.sync.get(element, (data) => {
     newHeaders.push({name: element, value: data[element]});
   });
+});
+chrome.storage.sync.get(element, (data) => {
+  newHeaders.push({name: element, value: data[element]});
 });
 
 chrome.webRequest.onBeforeSendHeaders.addListener(
